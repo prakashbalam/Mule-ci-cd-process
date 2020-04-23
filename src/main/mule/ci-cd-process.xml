@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="66d2f5b5-19f0-4042-a252-7fcf33f9d15e" >
+		<http:listener-connection host="0.0.0.0" port="8888" />
+	</http:listener-config>
+	<flow name="ci-cd-processFlow" doc:id="6006fa4f-998c-46b6-bddf-0f81e2976012" >
+		<http:listener doc:name="Listener" doc:id="f477fac4-3646-426c-a3df-59b30b982766" config-ref="HTTP_Listener_config" path="/hello"/>
+		<logger level="INFO" doc:name="Firts checking Logger" doc:id="0c8094df-d4df-4e55-b141-a09f6c45119b" message="The Flow started here----&gt;"/>
+		<set-payload value="#['Hello world']" doc:name="My Hotcode payload" doc:id="77329006-ceb0-4d4d-aaad-09a7779fdefa" />
+		<logger level="INFO" doc:name="Second checking Logger" doc:id="496d9833-4417-4e08-9b6e-f8e174f0b8fb" message="The second logger of after setpayload-----&gt;#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="3d66cccf-d93d-4ee3-807b-b15af809844d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	msg: payload ++ " Welocome to the MuleWorld!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="The last checking Logger" doc:id="6fa3df9d-0ef6-426d-ad01-8e169e96e933" message="The Final output is -----&gt;#[payload]"/>
+	</flow>
+</mule>
